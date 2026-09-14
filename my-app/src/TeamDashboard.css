@@ -1,0 +1,78 @@
+/* Author: Salomon Uwimana Masasu - Tasks 30, 48-50 */
+
+.team-score,
+.add-member-form,
+.member-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.team-score button,
+.add-member-form button,
+.status-filters button {
+  font: inherit;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #1f2937;
+  cursor: pointer;
+}
+
+.team-score button:hover,
+.add-member-form button:hover,
+.status-filters button:hover {
+  background: #e2e8f0;
+}
+
+.status-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.status-filters button.selected {
+  background: #1f2937;
+  color: #fff;
+  border-color: #1f2937;
+}
+
+.add-member-form input,
+.member-controls input {
+  font: inherit;
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: #1f2937;
+  background: #fff;
+}
+
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.empty-state {
+  margin: 24px 0;
+  color: #64748b;
+}
+
+@media (max-width: 640px) {
+  .member-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .team-score,
+  .add-member-form,
+  .member-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

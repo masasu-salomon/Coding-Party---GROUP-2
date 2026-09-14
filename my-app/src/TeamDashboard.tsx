@@ -1,47 +1,46 @@
 // Author: Salomon Uwimana Masasu
 // Updated by: Victor (Tasks 13, 20)
 // Updated by: Samuel Dushimimana (Tasks 31-40)
+// Updated by: Salomon Uwimana Masasu (Tasks 41-50)
 import { useState } from 'react'
 import type { ChangeEvent, FormEvent, JSX } from 'react'
-import MemberCard from './MemberCard'
+import MemberCard, { type Member } from './MemberCard'
+import './TeamDashboard.css'
 
-// Task 20: Create a typed array of member objects
-interface Member {
-  name: string;
-  role: string;
-  tasksCompleted: number;
-  isActive: boolean;
-  bio?: string;
-}
+type StatusFilter = 'all' | 'active' | 'inactive'
 
-// Task 20: Typed data array of member objects
-const members: Member[] = [
+const initialMembers: Member[] = [
   {
-    name: "Salomon Uwimana Masasu",
-    role: "Frontend Developer",
+    id: '1',
+    name: 'Salomon Uwimana Masasu',
+    role: 'Frontend Developer',
     tasksCompleted: 10,
     isActive: true,
-    bio: "Passionate about building clean user interfaces with React.",
+    bio: 'Passionate about building clean user interfaces with React.',
   },
   {
-    name: "Victor",
-    role: "Backend Developer",
+    id: '2',
+    name: 'Victor',
+    role: 'Backend Developer',
     tasksCompleted: 5,
     isActive: true,
-    // bio intentionally omitted to demonstrate Task 18 (optional rendering)
   },
   {
-    name: "Alice Johnson",
-    role: "UI/UX Designer",
+    id: '3',
+    name: 'Alice Johnson',
+    role: 'UI/UX Designer',
     tasksCompleted: 3,
     isActive: false,
-    bio: "Loves creating intuitive and accessible designs.",
+    bio: 'Loves creating intuitive and accessible designs.',
   },
-];
+]
 
 function TeamDashboard(): JSX.Element {
   const [teamScore, setTeamScore] = useState<number>(0)
-  const [newMemberName, setNewMemberName] = useState<string>("")
+  const [newMemberName, setNewMemberName] = useState<string>('')
+  const [members, setMembers] = useState<Member[]>(initialMembers)
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [searchQuery, setSearchQuery] = useState<string>('')
 
   const increaseScore = () => setTeamScore((score) => score + 1)
   const decreaseScore = () => setTeamScore((score) => Math.max(0, score - 1))
@@ -50,11 +49,54 @@ function TeamDashboard(): JSX.Element {
     setNewMemberName(event.target.value)
   }
 
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value)
+  }
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log("New member submitted:", newMemberName)
-    setNewMemberName("")
+    const trimmedName = newMemberName.trim()
+    console.log('New member submitted:', trimmedName)
+
+    if (!trimmedName) {
+      return
+    }
+
+    const newMember: Member = {
+      id: crypto.randomUUID(),
+      name: trimmedName,
+      role: 'Team Member',
+      tasksCompleted: 0,
+      isActive: true,
+    }
+
+    setMembers((currentMembers) => [...currentMembers, newMember])
+    setNewMemberName('')
   }
+
+  const handleRemove = (id: string) => {
+    setMembers((currentMembers) =>
+      currentMembers.filter((member) => member.id !== id),
+    )
+  }
+
+  const handleToggleStatus = (id: string) => {
+    setMembers((currentMembers) =>
+      currentMembers.map((member) =>
+        member.id === id ? { ...member, isActive: !member.isActive } : member,
+      ),
+    )
+  }
+
+  const visibleMembers = members.filter((member) => {
+    const matchesStatus =
+      statusFilter === 'all' ||
+      (statusFilter === 'active' ? member.isActive : !member.isActive)
+    const matchesSearch = member.name
+      .toLowerCase()
+      .includes(searchQuery.trim().toLowerCase())
+    return matchesStatus && matchesSearch
+  })
 
   return (
     <>
@@ -66,11 +108,15 @@ function TeamDashboard(): JSX.Element {
 
       <section className="team-score">
         <p>Team Score: {teamScore}</p>
-        <button onClick={increaseScore}>Increase Score</button>
-        <button onClick={decreaseScore}>Decrease Score</button>
+        <button type="button" onClick={increaseScore}>
+          Increase Score
+        </button>
+        <button type="button" onClick={decreaseScore}>
+          Decrease Score
+        </button>
       </section>
 
-      <form onSubmit={handleSubmit}>
+      <form className="add-member-form" onSubmit={handleSubmit}>
         <input
           type="text"
           value={newMemberName}
@@ -80,17 +126,53 @@ function TeamDashboard(): JSX.Element {
         <button type="submit">Add Member</button>
       </form>
 
-      {/* Task 20: Use .map() to render MemberCard components from the typed array */}
-      {members.map((member, index) => (
-        <MemberCard
-          key={index}
-          name={member.name}
-          role={member.role}
-          tasksCompleted={member.tasksCompleted}
-          isActive={member.isActive}
-          bio={member.bio}
+      <section className="member-controls" aria-label="Member filters">
+        <div className="status-filters">
+          <button
+            type="button"
+            className={statusFilter === 'all' ? 'selected' : ''}
+            onClick={() => setStatusFilter('all')}
+          >
+            All
+          </button>
+          <button
+            type="button"
+            className={statusFilter === 'active' ? 'selected' : ''}
+            onClick={() => setStatusFilter('active')}
+          >
+            Active
+          </button>
+          <button
+            type="button"
+            className={statusFilter === 'inactive' ? 'selected' : ''}
+            onClick={() => setStatusFilter('inactive')}
+          >
+            Inactive
+          </button>
+        </div>
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search members by name"
+          aria-label="Search members by name"
         />
-      ))}
+      </section>
+
+      {visibleMembers.length === 0 ? (
+        <p className="empty-state">No members match your filters.</p>
+      ) : (
+        <section className="member-grid">
+          {visibleMembers.map((member) => (
+            <MemberCard
+              key={member.id}
+              {...member}
+              onRemove={handleRemove}
+              onToggleStatus={handleToggleStatus}
+            />
+          ))}
+        </section>
+      )}
     </>
   )
 }
