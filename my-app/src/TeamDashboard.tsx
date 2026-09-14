@@ -1,5 +1,6 @@
 // Author: Salomon Uwimana Masasu
 import type { JSX } from 'react'
+import MemberCard from './MemberCard'
 
 function TeamDashboard(): JSX.Element {
   return (
@@ -9,6 +10,7 @@ function TeamDashboard(): JSX.Element {
         This application helps Group 2 organize members, track progress, and
         collaborate as we build our React and TypeScript project together.
       </p>
+      <MemberCard />
     </>
   )
 }
