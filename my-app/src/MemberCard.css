@@ -19,3 +19,29 @@
   color: #64748b;
   font-weight: bold;
 }
+
+.member-card.active {
+  border-left-color: #16a34a;
+}
+
+.member-card.inactive {
+  border-left-color: #94a3b8;
+  opacity: 0.85;
+}
+
+.member-bio {
+  color: #475569;
+}
+
+.member-status {
+  font-weight: bold;
+}
+
+.member-status.active {
+  color: #16a34a;
+}
+
+.member-status.inactive {
+  color: #64748b;
+}
+
