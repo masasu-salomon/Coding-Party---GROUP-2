@@ -1,7 +1,9 @@
+// Author: Salomon Uwimana Masasu
 import { useState } from 'react'
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
+import TeamDashboard from './TeamDashboard'
 import './App.css'
 
 function App() {
@@ -29,8 +31,8 @@ function App() {
           Count is {count}
         </button>
       </section>
-
-          </>
+      <TeamDashboard />
+    </>
   )
 }
 
