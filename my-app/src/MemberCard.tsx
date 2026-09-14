@@ -3,6 +3,8 @@
 // Task 14: Add a numeric prop called tasksCompleted
 // Task 15: Add a boolean prop called isActive
 // Task 17: Add an optional bio prop using the ? modifier
+import "./MemberCard.css";
+
 interface MemberCardProps {
   name: string;
   role: string;
@@ -15,14 +17,16 @@ interface MemberCardProps {
 // Task 19: Provide a default value for one prop using a default function parameter
 function MemberCard({ name, role, tasksCompleted = 0, isActive, bio }: MemberCardProps) {
   return (
-    <article>
-      <h2>{name}</h2>
-      <p>Role: {role}</p>
+    <article className={`member-card ${isActive ? "active" : "inactive"}`}>
+      <h2 className="member-name">{name}</h2>
+      <p className="member-role">Role: {role}</p>
       <p>Tasks Completed: {tasksCompleted}</p>
       {/* Task 16: Display Active or Inactive based on the value of isActive */}
-      <p>Status: {isActive ? "Active" : "Inactive"}</p>
+      <p className={`member-status ${isActive ? "active" : "inactive"}`}>
+        Status: {isActive ? "Active" : "Inactive"}
+      </p>
       {/* Task 18: Display the bio only when one is provided */}
-      {bio && <p>Bio: {bio}</p>}
+      {bio && <p className="member-bio">Bio: {bio}</p>}
     </article>
   );
 }
